@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
+import Image from '@editorjs/image';
+
 import axios from 'axios';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -22,6 +24,17 @@ const NewsEditor = () => {
         list: {
           class: List,
           inlineToolbar: true,
+        },
+        image: {
+          class: Image,
+          inlineToolbar: true,
+          config: {
+            endpoints: {
+              byFile: 'http://localhost:4000/api/addPhoto', // Your backend file uploader endpoint
+              
+            }
+          }
+          
         },
         // Add more tools as needed
       },
@@ -44,7 +57,7 @@ const NewsEditor = () => {
         const savedData = await editorInstance.current.save();
         const titleBlock = savedData.blocks.find((block) => block.type === 'header');
         const title = titleBlock ? titleBlock.data.text : 'Untitled';
-
+console.log(savedData);
         await axios.post('http://localhost:5000/api/news', { title, content: savedData });
         alert('News saved successfully!');
       } catch (error) {
@@ -62,9 +75,9 @@ const NewsEditor = () => {
         <Button variant="contained" color="primary" onClick={initializeEditor} disabled={isEditorReady}>
           Initialize Editor
         </Button>
-        {/* <Button variant="contained" color="secondary" onClick={saveNews} disabled={!isEditorReady}>
+         <Button variant="contained" color="secondary" onClick={saveNews} disabled={!isEditorReady}>
           Save News
-        </Button> */}
+        </Button> 
       </Box>
       <Box mt={2}>
         <div id="editorjs"></div>
